@@ -43,7 +43,7 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const contenido = e.target.result;
+        let contenido = e.target.result.replace(/\r?\n/g, ''); // elimina saltos de línea si los hubiera
         const datos = [encabezados];
 
         const totalRegistros = Math.floor(contenido.length / 441);
@@ -52,7 +52,6 @@
           const inicio = i * 441;
           const bloque = contenido.slice(inicio, inicio + 441);
 
-          // Si realmente el bloque entero está vacío, lo saltea
           if (/^\s*$/.test(bloque)) continue;
 
           const fila = columnas.map(([start, end]) => bloque.slice(start, end).trim());
