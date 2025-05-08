@@ -43,10 +43,10 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        let contenido = e.target.result.replace(/\r?\n/g, ''); // elimina saltos de línea si los hubiera
         const datos = [encabezados];
 
         const totalRegistros = Math.floor(contenido.length / 441);
+        console.log(totalRegistros);
 
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 441;
