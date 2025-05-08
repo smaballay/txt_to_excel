@@ -43,12 +43,15 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const lineas = e.target.result.split(/\\r?\\n/);
+        const contenido = e.target.result;
         const datos = [encabezados];
 
-        for (const linea of lineas) {
-          if (linea.trim() === "") continue;
-          const fila = columnas.map(([start, end]) => linea.slice(start, end).trim());
+        // Procesar cada bloque de 441 caracteres
+        for (let i = 0; i < contenido.length; i += 441) {
+          const bloque = contenido.slice(i, i + 441);
+          if (bloque.trim() === "") continue;
+
+          const fila = columnas.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
         }
 
