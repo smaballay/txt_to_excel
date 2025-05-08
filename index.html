@@ -46,10 +46,14 @@
         const contenido = e.target.result;
         const datos = [encabezados];
 
-        // Procesar cada bloque de 441 caracteres
-        for (let i = 0; i < contenido.length; i += 441) {
-          const bloque = contenido.slice(i, i + 441);
-          if (bloque.trim() === "") continue;
+        const totalRegistros = Math.floor(contenido.length / 441);
+
+        for (let i = 0; i < totalRegistros; i++) {
+          const inicio = i * 441;
+          const bloque = contenido.slice(inicio, inicio + 441);
+
+          // Si realmente el bloque entero está vacío, lo saltea
+          if (/^\s*$/.test(bloque)) continue;
 
           const fila = columnas.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
