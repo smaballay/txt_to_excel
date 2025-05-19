@@ -9,11 +9,11 @@
   <h2>Convertidor de archivo de texto plano a Excel</h2>
   <h3>JJ</h3>
   <input type="file" id="fileInputJJ" accept=".txt">
-  <button onclick="procesarArchivoJJ()">Convertir y Descargar Excel</button>
+  <button onclick="procesarArchivoJJ()">Convertir JJ</button>
 
   <h3>JP</h3>
   <input type="file" id="fileInputJP" accept=".txt">
-  <button onclick="procesarArchivoJP()">Convertir y Descargar Excel</button>
+  <button onclick="procesarArchivoJP()">Convertir JP</button>
 
   <script>
     const columnasJJ = [
@@ -58,15 +58,15 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
+        const contenido = e.target.result;
         const datos = [encabezadosJJ];
 
         const totalRegistros = Math.floor(contenido.length / 441);
+        console.log(totalRegistros);
 
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 441;
           const bloque = contenido.slice(inicio, inicio + 441);
-
-          if (/^\s*$/.test(bloque)) continue;
 
           const fila = columnasJJ.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
@@ -87,10 +87,11 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        let contenido = e.target.result;
+        const contenido = e.target.result;
         const datos = [encabezadosJP];
 
-        const totalRegistros = Math.floor(contenido.length / 278); // Longitud JP
+        const totalRegistros = Math.floor(contenido.length / 278); 
+        console.log(totalRegistros);
 
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 278;
