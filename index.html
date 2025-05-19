@@ -58,7 +58,6 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const contenido = e.target.result;
         const datos = [encabezadosJJ];
 
         const totalRegistros = Math.floor(contenido.length / 441);
@@ -66,6 +65,8 @@
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 441;
           const bloque = contenido.slice(inicio, inicio + 441);
+
+          if (/^\s*$/.test(bloque)) continue;
 
           const fila = columnasJJ.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
@@ -86,7 +87,7 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const contenido = e.target.result;
+        let contenido = e.target.result;
         const datos = [encabezadosJP];
 
         const totalRegistros = Math.floor(contenido.length / 278); // Longitud JP
@@ -94,6 +95,8 @@
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 278;
           const bloque = contenido.slice(inicio, inicio + 278);
+
+          if (/^\s*$/.test(bloque)) continue;
 
           const fila = columnasJP.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
