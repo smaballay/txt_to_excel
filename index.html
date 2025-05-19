@@ -6,7 +6,7 @@
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-  <h2>Convertidor de archivo de texto plano a Excel</h2>
+  <h2>Convertidor de archivo de texto plano a Excel 1.0</h2>
   <h3>JJ</h3>
   <input type="file" id="fileInputJJ" accept=".txt">
   <button onclick="procesarArchivoJJ()">Convertir JJ</button>
@@ -58,7 +58,7 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const contenido = e.target.result;
+        let contenido = e.target.result.replace(/\r?\n/g, '');
         const datos = [encabezadosJJ];
 
         const totalRegistros = Math.floor(contenido.length / 441);
@@ -87,7 +87,7 @@
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const contenido = e.target.result;
+        let contenido = e.target.result.replace(/\r?\n/g, '');
         const datos = [encabezadosJP];
 
         const totalRegistros = Math.floor(contenido.length / 278); 
