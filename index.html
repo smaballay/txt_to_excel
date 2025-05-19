@@ -7,11 +7,15 @@
 </head>
 <body>
   <h2>Convertidor de archivo de texto plano a Excel</h2>
-  <input type="file" id="fileInput" accept=".txt">
-  <button onclick="procesarArchivo()">Convertir y Descargar Excel</button>
+  <h3>JJ</h3>
+  <input type="file" id="fileInputJJ" accept=".txt">
+  <button onclick="procesarArchivoJJ()">Convertir y Descargar Excel</button>
+  <h3>JP</h3>
+  <input type="file" id="fileInputJP" accept=".txt">
+  <button onclick="procesarArchivoJP()">Convertir y Descargar Excel</button>
 
   <script>
-    const columnas = [
+    const columnasJJ = [
       [0, 5], [5, 23], [23, 173], [173, 174], [174, 182], [182, 186],
       [186, 197], [197, 208], [208, 228], [228, 248], [248, 258], [258, 259],
       [259, 271], [271, 277], [277, 278], [278, 279], [279, 280], [280, 281],
@@ -23,7 +27,7 @@
       [416, 417], [417, 418], [418, 436], [436, 440], [440, 441]
     ];
 
-    const encabezados = [
+    const encabezadosJJ = [
       "Cart", "Nro_Expte", "Caratula", "Carácter_ART", "Fecha_Notif", "Dto_Judicial",
       "CUIT", "CUIL", "Nro_Siniestro", "Nro_Seclo", "Nro_Litigio", "Monto_Indet",
       "Monto_Reclamado", "Incap_Reclamada", "Estudios_Méd", "Certif_Méd", "Examen_Físico",
@@ -36,14 +40,24 @@
       "Ajuste_Baremo_CS", "Denuncia_Penal", "Expte_Penal", "Dto_Judicial_2", "Tipo_Operacion"
     ];
 
-    function procesarArchivo() {
-      const input = document.getElementById('fileInput');
+    const columnasJP = [
+      [0, 5], [5, 23], [23, 43], [43, 45], [45, 46], [46, 57],
+      [57, 77], [77, 127], [127, 177], [177, 227], [227, 277], [277, 278]
+    ];
+
+    const encabezadosJP = [
+      "Cart", "Nro_Expte", "Nro_Seclo", "ID_Profesional", "Tipo", "CUIT", "Matrícula",
+      "Apellido", "Nombre", "Domicilio", "Estudio_Jurídico", "Tipo_Op"
+    ];
+
+    function procesarArchivoJJ() {
+      const input = document.getElementById('fileInputJJ');
       const archivo = input.files[0];
       if (!archivo) return alert("Selecciona un archivo .txt primero");
 
       const lector = new FileReader();
       lector.onload = function(e) {
-        const datos = [encabezados];
+        const datos = [encabezadosJJ];
 
         const totalRegistros = Math.floor(contenido.length / 441);
         console.log(totalRegistros);
@@ -54,7 +68,36 @@
 
           if (/^\s*$/.test(bloque)) continue;
 
-          const fila = columnas.map(([start, end]) => bloque.slice(start, end).trim());
+          const fila = columnasJJ.map(([start, end]) => bloque.slice(start, end).trim());
+          datos.push(fila);
+        }
+
+        const hoja = XLSX.utils.aoa_to_sheet(datos);
+        const libro = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(libro, hoja, "Datos");
+
+        XLSX.writeFile(libro, "datos_convertidos.xlsx");
+      };
+
+      function procesarArchivoJP() {
+      const input = document.getElementById('fileInputJP');
+      const archivo = input.files[0];
+      if (!archivo) return alert("Selecciona un archivo .txt primero");
+
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        const datos = [encabezadosJP];
+
+        const totalRegistros = Math.floor(contenido.length / 441);
+        console.log(totalRegistros);
+
+        for (let i = 0; i < totalRegistros; i++) {
+          const inicio = i * 441;
+          const bloque = contenido.slice(inicio, inicio + 441);
+
+          if (/^\s*$/.test(bloque)) continue;
+
+          const fila = columnasJP.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
         }
 
