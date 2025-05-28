@@ -2,24 +2,28 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Convertidor de TXT a Excel 1.1</title>
+  <title>Convertidor</title>
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-  <h2>Convertidor de archivo de texto plano a Excel</h2>
+  <h2>Convertidor de archivos</h2>
 
-  <h3>JJ</h3>
+  <h3>JJ a Excel</h3>
   <input type="file" id="fileInputJJ" accept=".txt">
-  <button onclick="procesarArchivoJJ()">Convertir JJ</button>
+  <button onclick="procesarArchivoJJ()">Convertir</button>
 
-  <h3>JP</h3>
+  <h3>JP a Excel</h3>
   <input type="file" id="fileInputJP" accept=".txt">
-  <button onclick="procesarArchivoJP()">Convertir JP</button>
+  <button onclick="procesarArchivoJP()">Convertir</button>
 
-  <h3>TXT Tabulado</h3>
+  <h3>TXT Tabulado a Excel</h3>
   <input type="file" id="fileInputTab" accept=".txt">
-  <button onclick="procesarArchivoTabulado()">Convertir TXT Tabulado</button>
+  <button onclick="procesarArchivoTabulado()">Convertir</button>
 
+  <h3>Excel a TXT Tabulado</h3>
+  <input type="file" id="fileInputExcel" accept=".xlsx">
+  <button onclick="convertirExcelATxt()">Convertir</button>
+  
   <script>
     // --- CONFIGURACIÓN JJ ---
     const columnasJJ = [
@@ -56,6 +60,21 @@
     const encabezadosJP = [
       "Cart", "Nro_Expte", "Nro_Seclo", "ID_Profesional", "Tipo", "CUIT", "Matrícula",
       "Apellido", "Nombre", "Domicilio", "Estudio_Jurídico", "Tipo_Op"
+    ];
+
+    // --- ENCABEZADO JYM ---
+    const encabezadosTab = [
+      "Cod", "RAJ", "Fecha Registro", "Tipo Registro", "Libro", "J o M",
+      "Ramo (Op)", "Sub Ramo (Op)", "Tipo Daño (Op)", "Expte (Op)", "Fuero (Op)",
+      "Juzgado (Op)", "Nro Juzgado (Op)", "Secretaria (Op)", "Actor", "Demandado",
+      "Asunto", "CUIL", "Abogado ART (Op)", "CUIL (Op)", "Estudio ART (Op)", "CUIL (Op)",
+      "Abogado PA", "Póliza", "Endoso", "Certificado", "Póliza (Op)", "Siniestro",
+      "Fecha siniestro (Op)", "Fecha demanda", "Fecha monto", "Monto indet",
+      "Monte demanda", "Moneda", "Tipo ART (Op)", "No seguro", "Fecha AO (Op)",
+      "Fecha fin juicio (Op)", "Estado Procesal", "Pagos de cap e int",
+      "Honorarios y gastos", "Total monto reservado",
+      "Monto reservado bruto de reaseguro", "Monto diferencia reserva comparada",
+      "Monto reservado no siniestros", "RAJ mediación", "Carácter ART", "Observaciones"
     ];
 
     function procesarArchivoJJ() {
@@ -113,13 +132,46 @@
       const lector = new FileReader();
       lector.onload = function(e) {
         const contenido = e.target.result;
-        const lineas = contenido.split(/\r?\n/).filter(linea => linea.trim() !== "");
-        const datos = lineas.map(linea => linea.split('\t').map(campo => campo.trim()));
+        const lineas = contenido.split(/\r?\n/).filter(linea => linea.trim() !== "")];
+        const datos = [encabezadosTab];
+
+        for (const linea of lineas) {
+          const fila = linea.split('\t').map(campo => campo.trim());
+          datos.push(fila);
+        }
+
         descargarExcel(datos, "Datos_Tabulados", "datos_tabulados.xlsx");
       };
       lector.readAsText(archivo, 'UTF-8');
     }
 
+    function convertirExcelATxt() {
+      const input = document.getElementById('fileInputExcel');
+      const archivo = input.files[0];
+      if (!archivo) return alert("Seleccioná un archivo .xlsx primero");
+
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const primeraHoja = workbook.SheetNames[0];
+        const hoja = workbook.Sheets[primeraHoja];
+        const datos = XLSX.utils.sheet_to_json(hoja, { header: 1 });
+
+        const lineasTxt = datos
+          .filter(fila => fila.some(celda => celda !== undefined && celda !== null && celda.toString().trim() !== ''))
+          .map(fila => fila.map(celda => (celda ?? "").toString().trim()).join('\t'))
+          .join('\n');
+
+        const blob = new Blob([lineasTxt], { type: "text/plain;charset=utf-8" });
+        const enlace = document.createElement("a");
+        enlace.href = URL.createObjectURL(blob);
+        enlace.download = "convertido.txt";
+        enlace.click();
+      };
+      lector.readAsArrayBuffer(archivo);
+    }
+    
     function descargarExcel(datos, nombreHoja, nombreArchivo) {
       const hoja = XLSX.utils.aoa_to_sheet(datos);
       const libro = XLSX.utils.book_new();
