@@ -2,11 +2,12 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Convertidor de TXT a Excel</title>
+  <title>Convertidor de TXT a Excel 1.1</title>
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-  <h2>Convertidor de archivo de texto plano a Excel 1.0</h2>
+  <h2>Convertidor de archivo de texto plano a Excel</h2>
+
   <h3>JJ</h3>
   <input type="file" id="fileInputJJ" accept=".txt">
   <button onclick="procesarArchivoJJ()">Convertir JJ</button>
@@ -15,7 +16,12 @@
   <input type="file" id="fileInputJP" accept=".txt">
   <button onclick="procesarArchivoJP()">Convertir JP</button>
 
+  <h3>TXT Tabulado</h3>
+  <input type="file" id="fileInputTab" accept=".txt">
+  <button onclick="procesarArchivoTabulado()">Convertir TXT Tabulado</button>
+
   <script>
+    // --- CONFIGURACIÓN JJ ---
     const columnasJJ = [
       [0, 5], [5, 23], [23, 173], [173, 174], [174, 182], [182, 186],
       [186, 197], [197, 208], [208, 228], [228, 248], [248, 258], [258, 259],
@@ -41,6 +47,7 @@
       "Ajuste_Baremo_CS", "Denuncia_Penal", "Expte_Penal", "Dto_Judicial_2", "Tipo_Operacion"
     ];
 
+    // --- CONFIGURACIÓN JP ---
     const columnasJP = [
       [0, 5], [5, 23], [23, 43], [43, 45], [45, 46], [46, 57],
       [57, 77], [77, 127], [127, 177], [177, 227], [227, 277], [277, 278]
@@ -62,20 +69,14 @@
         const datos = [encabezadosJJ];
 
         const totalRegistros = Math.floor(contenido.length / 441);
-        console.log(totalRegistros);
-
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 441;
           const bloque = contenido.slice(inicio, inicio + 441);
-
           const fila = columnasJJ.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
         }
 
-        const hoja = XLSX.utils.aoa_to_sheet(datos);
-        const libro = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(libro, hoja, "Datos_JJ");
-        XLSX.writeFile(libro, "datos_JJ.xlsx");
+        descargarExcel(datos, "Datos_JJ", "datos_JJ.xlsx");
       };
       lector.readAsText(archivo, 'UTF-8');
     }
@@ -90,25 +91,40 @@
         let contenido = e.target.result.replace(/\r?\n/g, '');
         const datos = [encabezadosJP];
 
-        const totalRegistros = Math.floor(contenido.length / 278); 
-        console.log(totalRegistros);
-
+        const totalRegistros = Math.floor(contenido.length / 278);
         for (let i = 0; i < totalRegistros; i++) {
           const inicio = i * 278;
           const bloque = contenido.slice(inicio, inicio + 278);
-
           if (/^\s*$/.test(bloque)) continue;
-
           const fila = columnasJP.map(([start, end]) => bloque.slice(start, end).trim());
           datos.push(fila);
         }
 
-        const hoja = XLSX.utils.aoa_to_sheet(datos);
-        const libro = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(libro, hoja, "Datos_JP");
-        XLSX.writeFile(libro, "datos_JP.xlsx");
+        descargarExcel(datos, "Datos_JP", "datos_JP.xlsx");
       };
       lector.readAsText(archivo, 'UTF-8');
+    }
+
+    function procesarArchivoTabulado() {
+      const input = document.getElementById('fileInputTab');
+      const archivo = input.files[0];
+      if (!archivo) return alert("Seleccioná un archivo .txt tabulado primero");
+
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        const contenido = e.target.result;
+        const lineas = contenido.split(/\r?\n/).filter(linea => linea.trim() !== "");
+        const datos = lineas.map(linea => linea.split('\t').map(campo => campo.trim()));
+        descargarExcel(datos, "Datos_Tabulados", "datos_tabulados.xlsx");
+      };
+      lector.readAsText(archivo, 'UTF-8');
+    }
+
+    function descargarExcel(datos, nombreHoja, nombreArchivo) {
+      const hoja = XLSX.utils.aoa_to_sheet(datos);
+      const libro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(libro, hoja, nombreHoja);
+      XLSX.writeFile(libro, nombreArchivo);
     }
   </script>
 </body>
