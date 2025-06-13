@@ -16,6 +16,14 @@
   <input type="file" id="fileInputJP" accept=".txt">
   <button onclick="procesarArchivoJP()">Convertir</button>
 
+  <h3>AT a Excel</h3>
+  <input type="file" id="fileInputAT" accept=".txt">
+  <button onclick="procesarArchivoAT()">Convertir</button>
+
+  <h3>EF a Excel</h3>
+  <input type="file" id="fileInputEF" accept=".txt">
+  <button onclick="procesarArchivoEF()">Convertir</button>
+
   <h3>TXT Tabulado a Excel</h3>
   <input type="file" id="fileInputTab" accept=".txt">
   <button onclick="procesarArchivoTabulado()">Convertir</button>
@@ -62,6 +70,56 @@
       "Apellido", "Nombre", "Domicilio", "Estudio_Jurídico", "Tipo_Op"
     ];
 
+    // --- CONFIGURACIÓN AT ---
+    const columnasAT = [
+      [1, 5], [6, 25], [26, 26], [27, 37], [38, 38], [39, 39], [40, 50], [51, 52], [53, 62], [63, 73],
+      [74, 75], [76, 83], [84, 123], [124, 127], [128, 130], [131, 131], [132, 139], [140, 147], [148, 155],
+      [156, 160], [161, 163], [164, 167], [168, 169], [170, 172], [173, 176], [177, 178], [179, 181],
+      [182, 185], [186, 187], [188, 190], [191, 198], [199, 199], [200, 200], [201, 208], [209, 212],
+      [213, 218], [219, 219], [220, 227], [228, 247], [248, 248], [249, 256], [257, 262], [263, 266],
+      [267, 274], [275, 276], [277, 280], [281, 380], [381, 385], [386, 393], [394, 394], [395, 402],
+      [403, 403], [404, 411], [412, 419], [420, 427], [428, 428], [429, 429], [430, 430], [431, 431],
+      [432, 451], [452, 461], [462, 462], [463, 464], [465, 466], [467, 468], [469, 470], [471, 478],
+      [479, 479], [480, 487], [488, 987]
+    ];
+    
+    const encabezadosAT = [
+      "ART", "Siniestro", "Op", "CUIT", "TS", "Oc. VP", "CUIT ocurrencia", "Categoria",
+      "Cod Establecimiento", "CUIL trabajador", "Tipo DNI", "DNI", "APELLIDO Y NOMBRE",
+      "PUESTO", "ANTIGÜEDAD", "SEXO", "F NACIMIENTO", "F OCURRENCIA", "F INASISTENCIA LAB",
+      "AG MAT", "FORMA ACC", "DIAG 1", "LESION 1", "ZONA 1", "DIAG 2", "LESION 2", "ZONA 2",
+      "DIAG 3", "LESION 3", "ZONA 3", "F CESE ILT", "IP", "MOTIVO CESE", "F IP", "TIPO IP",
+      "% IP", "GI", "F DCM", "EXP DCM", "PAT", "F ALTA", "ROAM", "AÑO ROAM", "F CONOC",
+      "COD PROV", "COD LOC", "CALLE", "ALTURA", "CPA", "ESTRÉS", "F RECHAZO", "MOTIVO",
+      "F INICIO TRANSITORIEDAD", "F CESE T", "F ESTIMADA ALTA", "MOTIVO CESE T", "CRONICO",
+      "RECA", "INTERCURRENCIA", "STRO INTER", "IB", "TTO PEND", "ESP 1", "ESP 2", "ESP 3",
+      "FORMA DEN", "F MORTAL", "T PREST", "PRESTADOR", "RELATO"
+    ];
+    
+    // --- CONFIGURACIÓN EF ---
+    const columnasEF = [
+      [1, 5], [6, 25], [26, 26], [27, 37], [38, 38], [39, 49], [50, 51], [52, 61], [62, 72], [73, 74],
+      [75, 82], [83, 122], [123, 126], [127, 129], [130, 130], [131, 138], [139, 146], [147, 151],
+      [152, 156], [157, 159], [160, 160], [161, 168], [169, 172], [173, 180], [181, 181], [182, 184],
+      [185, 188], [189, 196], [197, 199], [200, 203], [204, 211], [212, 214], [215, 222], [223, 223],
+      [224, 224], [225, 232], [233, 236], [237, 242], [243, 243], [244, 251], [252, 271], [272, 279],
+      [280, 287], [288, 289], [290, 293], [294, 393], [394, 398], [399, 406], [407, 414], [415, 415],
+      [416, 423], [424, 431], [432, 439], [440, 440], [441, 441], [442, 442], [443, 452],
+      [453, 453], [454, 455], [456, 457], [458, 459]
+    ];
+    
+    const encabezadosEF = [
+      "ART", "Siniestro", "Op", "CUIT", "T Reg", "CUIT ocurrencia", "Categoria",
+      "Cod Establecimiento", "CUIL trabajador", "Tipo DNI", "DNI", "APELLIDO Y NOMBRE",
+      "PUESTO", "ANTIGÜEDAD", "SEXO", "F NACIMIENTO", "F INASISTENCIA LAB", "AG MAT",
+      "AG CAU", "TIEMPO EXPO", "EX PER", "F EX", "DIAG 1", "F DIAG 1", "COD EX",
+      "ZONA 1", "DIAG 2", "F DIAG 2", "ZONA 2", "DIAG 3", "F DIAG 3", "ZONA 3",
+      "F CESE ILT", "IP", "MOTIVO CESE", "F IP", "TIPO IP", "% IP", "GI", "F DCM",
+      "EXP DCM", "F ALTA", "F CONOC", "COD PROV", "COD LOC", "CALLE", "ALTURA", "CPA",
+      "F RECHAZO", "MOTIVO", "F INICIO TRANSITORIEDAD", "F CESE T", "F ESTIMADA ALTA",
+      "MOTIVO CESE T", "CRONICO", "RECA", "IB", "TTO PEND", "ESP 1", "ESP 2", "ESP 3"
+    ];
+        
     // --- ENCABEZADO JYM ---
     const encabezadosTab = [
       "Cod", "RAJ", "Fecha Registro", "Tipo Registro", "Libro", "J o M",
@@ -120,6 +178,56 @@
         }
 
         descargarExcel(datos, "Datos_JP", "datos_JP.xlsx");
+      };
+      lector.readAsText(archivo, 'UTF-8');
+    }
+
+    function procesarArchivoAT() {
+      const input = document.getElementById('fileInputAT');
+      const archivo = input.files[0];
+      if (!archivo) return alert("Seleccioná un archivo .txt para AT");
+    
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        let contenido = e.target.result.replace(/\r?\n/g, '');
+        const datos = [encabezadosAT];
+    
+        const largoRegistro = 988;
+        const totalRegistros = Math.floor(contenido.length / largoRegistro);
+        for (let i = 0; i < totalRegistros; i++) {
+          const inicio = i * largoRegistro;
+          const bloque = contenido.slice(inicio, inicio + largoRegistro);
+          if (/^\s*$/.test(bloque)) continue;
+          const fila = columnasAT.map(([start, end]) => bloque.slice(start, end).trim());
+          datos.push(fila);
+        }
+    
+        descargarExcel(datos, "Datos_AT", "datos_AT.xlsx");
+      };
+      lector.readAsText(archivo, 'UTF-8');
+    }
+    
+    function procesarArchivoEF() {
+      const input = document.getElementById('fileInputEF');
+      const archivo = input.files[0];
+      if (!archivo) return alert("Seleccioná un archivo .txt para EF");
+    
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        let contenido = e.target.result.replace(/\r?\n/g, '');
+        const datos = [encabezadosEF];
+    
+        const largoRegistro = 460;
+        const totalRegistros = Math.floor(contenido.length / largoRegistro);
+        for (let i = 0; i < totalRegistros; i++) {
+          const inicio = i * largoRegistro;
+          const bloque = contenido.slice(inicio, inicio + largoRegistro);
+          if (/^\s*$/.test(bloque)) continue;
+          const fila = columnasEF.map(([start, end]) => bloque.slice(start, end).trim());
+          datos.push(fila);
+        }
+    
+        descargarExcel(datos, "Datos_EF", "datos_EF.xlsx");
       };
       lector.readAsText(archivo, 'UTF-8');
     }
