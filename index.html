@@ -313,9 +313,9 @@
 
         const lineas = datos.map(fila => {
           return columnas.map(([start, end], i) => {
-            let largo = end - start - 1;
+            let largo = end - start;
             let valor = (fila[i] ?? "").toString().trim();
-            return valor.padEnd(largo, ' ').slice(0, largo);
+            return valor.toString().padEnd(largo, ' ').substring(0, largo)
           }).join('');
         });
 
