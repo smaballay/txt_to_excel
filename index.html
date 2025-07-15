@@ -12,7 +12,7 @@
   <input type="file" id="fileInputJJ">
   <button onclick="procesarArchivoJJ()">Convertir</button>
 
-  <h3>Excel a JJ (formato fijo)</h3>
+  <h3>Excel a JJ</h3>
   <input type="file" id="excelAJJ">
   <button onclick="convertirExcelAJJ()">Convertir</button>
 
@@ -296,13 +296,6 @@
       };
       lector.readAsArrayBuffer(archivo);
     }
-    
-    function descargarExcel(datos, nombreHoja, nombreArchivo) {
-      const hoja = XLSX.utils.aoa_to_sheet(datos);
-      const libro = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(libro, hoja, nombreHoja);
-      XLSX.writeFile(libro, nombreArchivo);
-    }
 
     function convertirExcelAFijo(idInput, columnas, nombreArchivo) {
       const input = document.getElementById(idInput);
@@ -320,7 +313,7 @@
 
         const lineas = datos.map(fila => {
           return columnas.map(([start, end], i) => {
-            let largo = end - start;
+            let largo = end - start - 1;
             let valor = (fila[i] ?? "").toString().trim();
             return valor.padEnd(largo, ' ').slice(0, largo);
           }).join('');
@@ -333,6 +326,13 @@
         enlace.click();
       };
       lector.readAsArrayBuffer(archivo);
+    }
+    
+    function descargarExcel(datos, nombreHoja, nombreArchivo) {
+      const hoja = XLSX.utils.aoa_to_sheet(datos);
+      const libro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(libro, hoja, nombreHoja);
+      XLSX.writeFile(libro, nombreArchivo);
     }
 
     function convertirExcelAJJ() {
