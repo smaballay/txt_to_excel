@@ -4,50 +4,60 @@
   <meta charset="UTF-8">
   <title>Convertidor</title>
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-  <h2>Convertidor de archivos</h2>
+  <h2 style="text-align:center;">Convertidor de archivos</h2>
 
-  <h3>JJ a Excel</h3>
-  <input type="file" id="fileInputJJ">
-  <button onclick="procesarArchivoJJ()">Convertir</button>
+  <div class="grid-container">
 
-  <h3>Excel a JJ</h3>
-  <input type="file" id="excelAJJ">
-  <button onclick="convertirExcelAJJ()">Convertir</button>
+    <div class="grid-item">
+      <h3>JJ a Excel</h3>
+      <input type="file" id="fileInputJJ">
+      <button onclick="procesarArchivoJJ()">Convertir</button>  
+      <h3>Excel a JJ</h3>
+      <input type="file" id="excelAJJ">
+      <button onclick="convertirExcelAJJ()">Convertir</button>
+    </div>
 
-  <h3>JP a Excel</h3>
-  <input type="file" id="fileInputJP">
-  <button onclick="procesarArchivoJP()">Convertir</button>
-
-  <h3>Excel a JP</h3>
-  <input type="file" id="excelAJP">
-  <button onclick="convertirExcelAJP()">Convertir</button>
-
-  <h3>AT a Excel</h3>
-  <input type="file" id="fileInputAT">
-  <button onclick="procesarArchivoAT()">Convertir</button>
-
-  <h3>Excel a AT</h3>
-  <input type="file" id="excelAAT">
-  <button onclick="convertirExcelAAT()">Convertir</button>
-
-  <h3>EF a Excel</h3>
-  <input type="file" id="fileInputEF">
-  <button onclick="procesarArchivoEF()">Convertir</button>
-
-  <h3>Excel a EF</h3>
-  <input type="file" id="excelAEF">
-  <button onclick="convertirExcelAEF()">Convertir</button>
-
-  <h3>TXT Tabulado a Excel</h3>
-  <input type="file" id="fileInputTab">
-  <button onclick="procesarArchivoTabulado()">Convertir</button>
-
-  <h3>Excel a TXT Tabulado</h3>
-  <input type="file" id="fileInputExcel">
-  <button onclick="convertirExcelATxt()">Convertir</button>
-
+    <div class="grid-item">
+      <h3>JP a Excel</h3>
+      <input type="file" id="fileInputJP">
+      <button onclick="procesarArchivoJP()">Convertir</button>
+      <h3>Excel a JP</h3>
+      <input type="file" id="excelAJP">
+      <button onclick="convertirExcelAJP()">Convertir</button>
+    </div>
+  
+    <div class="grid-item">
+      <h3>AT a Excel</h3>
+      <input type="file" id="fileInputAT">
+      <button onclick="procesarArchivoAT()">Convertir</button>
+      <h3>Excel a AT</h3>
+      <input type="file" id="excelAAT">
+      <button onclick="convertirExcelAAT()">Convertir</button>
+    </div>
+  
+    <div class="grid-item">
+      <h3>EF a Excel</h3>
+      <input type="file" id="fileInputEF">
+      <button onclick="procesarArchivoEF()">Convertir</button>
+      <h3>Excel a EF</h3>
+      <input type="file" id="excelAEF">
+      <button onclick="convertirExcelAEF()">Convertir</button>
+    </div>
+  
+    <div class="grid-item full-width">
+      <h3>TXT Tabulado a Excel</h3>
+      <input type="file" id="fileInputTab">
+      <button onclick="procesarArchivoTabulado()">Convertir</button>
+  
+      <h3>Excel a TXT Tabulado</h3>
+      <input type="file" id="fileInputExcel">
+      <button onclick="convertirExcelATxt()">Convertir</button>
+    </div>
+  </div>
+  
   <script>
     // --- CONFIGURACIÓN JJ ---
     const columnasJJ = [
