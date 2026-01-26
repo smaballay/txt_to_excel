@@ -284,28 +284,40 @@
       const input = document.getElementById('fileInputExcel');
       const archivo = input.files[0];
       if (!archivo) return alert("Seleccioná un archivo .xlsx primero");
-
+    
       const lector = new FileReader();
       lector.onload = function(e) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const primeraHoja = workbook.SheetNames[0];
-        const hoja = workbook.Sheets[primeraHoja];
-        const datos = XLSX.utils.sheet_to_json(hoja, { header: 1 });
+        const hoja = workbook.Sheets[workbook.SheetNames[0]];
 
+        const datos = XLSX.utils.sheet_to_json(hoja, {
+          header: 1,
+          defval: ""
+        });
+    
+        const maxColumnas = Math.max(...datos.map(fila => fila.length));
+    
         const lineasTxt = datos
-          .filter(fila => fila.some(celda => celda !== undefined && celda !== null && celda.toString().trim() !== ''))
-          .map(fila => fila.map(celda => (celda ?? "").toString().trim()).join('\t'))
+          .filter(fila => fila.some(celda => celda !== ""))
+          .map(fila => {
+            while (fila.length < maxColumnas) {
+              fila.push("");
+            }
+            return fila.join('\t');
+          })
           .join('\n');
-
+    
         const blob = new Blob([lineasTxt], { type: "text/plain;charset=utf-8" });
         const enlace = document.createElement("a");
         enlace.href = URL.createObjectURL(blob);
         enlace.download = "convertido.txt";
         enlace.click();
       };
+    
       lector.readAsArrayBuffer(archivo);
     }
+
 
     function convertirExcelAFijo(idInput, columnas, nombreArchivo) {
       const input = document.getElementById(idInput);
