@@ -46,17 +46,17 @@
       <input type="file" id="excelAEF">
       <button onclick="convertirExcelAEF()">Convertir</button>
     </div>
-  
-    <div class="grid-item">
-      <h3>TXT Tabulado a Excel</h3>
-      <input type="file" id="fileInputTab">
-      <button onclick="procesarArchivoTabulado()">Convertir</button>
-  
-      <h3>Excel a TXT Tabulado</h3>
-      <input type="file" id="fileInputExcel">
-      <button onclick="convertirExcelATxt()">Convertir</button>
-    </div>
 
+    <div class="grid-item">
+      <h3>RAT a Excel</h3>
+      <input type="file" id="fileInputRAT">
+      <button onclick="procesarArchivoRAT()">Convertir</button>
+    
+      <h3>Excel a RAT</h3>
+      <input type="file" id="excelARAT">
+      <button onclick="convertirExcelARAT()">Convertir</button>
+    </div>
+    
     <div class="grid-item">
       <h3>REF a Excel</h3>
       <input type="file" id="fileInputREF">
@@ -67,6 +67,16 @@
       <button onclick="convertirExcelAREF()">Convertir</button>
     </div>
   </div>
+
+    <div class="grid-item full-width">
+      <h3>TXT Tabulado a Excel</h3>
+      <input type="file" id="fileInputTab">
+      <button onclick="procesarArchivoTabulado()">Convertir</button>
+  
+      <h3>Excel a TXT Tabulado</h3>
+      <input type="file" id="fileInputExcel">
+      <button onclick="convertirExcelATxt()">Convertir</button>
+    </div>
   
   <script>
     // --- CONFIGURACIÓN JJ ---
@@ -132,6 +142,34 @@
       "Recalificación", "Intercurrencia", "Stro Intercurrencia", "IBM Calculado", "Tto Pendiente", 
       "Especialidad 1", "Especialidad 2", "Especialidad 3", "Modalidad de Denuncia", "Fecha de defunción", 
       "Tipo Prestador Médico de la primer atención", "Prestador", "Relato"
+    ];
+
+    // --- CONFIGURACIÓN RAT ---
+    const columnasRAT = [
+      [0, 5], [5, 25], [25, 26], [26, 37], [37, 38], [38, 39], [39, 50], [50, 52], [52, 62], [62, 73],
+      [73, 75], [75, 83], [83, 123], [123, 127], [127, 130], [130, 131], [131, 139], [139, 147], [147, 155],
+      [155, 160], [160, 163], [163, 167], [167, 169], [169, 172], [172, 176], [176, 178], [178, 181],
+      [181, 185], [185, 187], [187, 190], [190, 198], [198, 199], [199, 200], [200, 208], [208, 212],
+      [212, 218], [218, 219], [219, 227], [227, 247], [247, 248], [248, 256], [256, 262], [262, 266],
+      [266, 274], [274, 276], [276, 280], [280, 380], [380, 385], [385, 393], [393, 394], [394, 402],
+      [402, 403], [403, 411], [411, 419], [419, 427], [427, 428], [428, 429], [429, 430], [430, 431],
+      [431, 451], [451, 461], [461, 462], [462, 464], [464, 466], [466, 468], [468, 470], [470, 478],
+      [478, 479], [479, 487], [487, 987], [987, 997], [997, 1007]
+    ];
+    
+    const encabezadosRAT = [
+      "ART", "Siniestro", "Op", "CUIT", "Tipo Siniestro", "Vía Públ.", "CUIT Ocurrencia", "Categoría",
+      "Cód. Estab.", "CUIL", "Tipo Doc.", "N° Documento", "Trabajador",
+      "Puesto Trabajo", "Antigüedad", "Sexo", "F. Nacimiento", "F. Accidente", "F. Abandono Trabajo",
+      "Agente Causante", "Forma Accidente", "Diag. 1", "Lesión 1", "Zona 1", "Diag. 2", "Lesión 2", "Zona 2",
+      "Diag. 3", "Lesión 3", "Zona 3", "F. Cese ILT", "Incap.", "Motivo Cese ILT", "F. Incap.", "T. Incap.",
+      "% Incap.", "Gran Invalidez", "F. Dictamen", "Nº Expte CMM", "Patología Traz.", "F. Alta Médica", 
+      "Nº Denun. ROAM", "Año Denun. ROAM", "F. Toma Conocimiento", "Cód. Provincia",
+      "Cód. Localidad", "Calle", "Altura", "CPA", "Estrés Post-Traumático", "F. Rechazo", "Motivo Rechazo",
+      "F. Inicio Trans.", "F. Fin Trans.", "F. Estim. Alta", "Motivo Cese Trans.", "Crónico",
+      "Recalificación", "Intercurrencia", "Stro Intercurrencia", "IBM Calculado", "Tto Pendiente", 
+      "Especialidad 1", "Especialidad 2", "Especialidad 3", "Modalidad de Denuncia", "Fecha de defunción", 
+      "Tipo Prestador Médico de la primer atención", "Prestador", "Relato", "Observaciones", "Errores"
     ];
     
     // --- CONFIGURACIÓN EF ---
@@ -270,6 +308,49 @@
         descargarExcel(datos, "Datos_AT", "datos_AT.xlsx");
       };
       lector.readAsText(archivo, 'UTF-8');
+    }
+
+    function procesarArchivoRAT() {
+      const input = document.getElementById('fileInputRAT');
+      const archivo = input.files[0];
+    
+      if (!archivo) return alert("Seleccioná un archivo .txt para RAT");
+    
+      const lector = new FileReader();
+    
+      lector.onload = function(e) {
+        let contenido = e.target.result.replace(/\r?\n/g, '');
+        const datos = [encabezadosRAT];
+    
+        const largoRegistro = 1007;
+    
+        const totalRegistros = Math.floor(contenido.length / largoRegistro);
+    
+        for (let i = 0; i < totalRegistros; i++) {
+          const inicio = i * largoRegistro;
+          const bloque = contenido.slice(inicio, inicio + largoRegistro);
+    
+          if (/^\s*$/.test(bloque)) continue;
+    
+          const fila = columnasRAT.map(([start, end]) =>
+            bloque.slice(start, end).trim()
+          );
+    
+          datos.push(fila);
+        }
+    
+        descargarExcel(datos, "Datos_RAT", "datos_RAT.xlsx");
+      };
+    
+      lector.readAsText(archivo, 'UTF-8');
+    }
+
+    function convertirExcelARAT() {
+      convertirExcelAFijo(
+        "excelARAT",
+        columnasRAT,
+        "convertido_RAT.txt"
+      );
     }
     
     function procesarArchivoEF() {
